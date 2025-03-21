@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Income</h2>
+    <form method="POST" action="{% url 'add_income' %}">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700">Amount</label>
+            <input type="number" name="amount" required class="w-full p-2 border rounded-lg">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700">Description</label>
+            <input type="text" name="description" class="w-full p-2 border rounded-lg">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700">Date</label>
+            <input type="date" name="date" required class="w-full p-2 border rounded-lg">
+        </div>
+
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg w-full hover:bg-green-600">Add Income</button>
+    </form>
+</div>
+{% endblock %}

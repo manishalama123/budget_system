@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Transaction History</h2>
+
+    <!-- Income Table -->
+    <h3 class="text-xl font-semibold text-green-600">Income</h3>
+    <table class="w-full bg-white shadow-md rounded-lg overflow-hidden my-4">
+        <thead class="bg-green-500 text-white">
+            <tr>
+                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Category</th>
+                <th class="p-3 text-right">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for income in incomes %}
+            <tr class="border-b">
+                <td class="p-3">{{ income.date }}</td>
+                <td class="p-3">{{ income.category }}</td>
+                <td class="p-3 text-right">₹ {{ income.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Expense Table -->
+    <h3 class="text-xl font-semibold text-red-600">Expenses</h3>
+    <table class="w-full bg-white shadow-md rounded-lg overflow-hidden my-4">
+        <thead class="bg-red-500 text-white">
+            <tr>
+                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Category</th>
+                <th class="p-3 text-right">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr class="border-b">
+                <td class="p-3">{{ expense.date }}</td>
+                <td class="p-3">{{ expense.category }}</td>
+                <td class="p-3 text-right">₹ {{ expense.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
