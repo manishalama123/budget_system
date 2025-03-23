@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from . import models
 from .models import Income, Expense
 from decimal import Decimal
+from django.core.paginator import Paginator
 from django.db.models import Sum 
 
 # def home(request):
@@ -48,11 +49,37 @@ def add_expense(request):
 
 
 def history(request):
-    incomes = Income.objects.all().order_by('-date')
-    expenses = Expense.objects.all().order_by('-date')
+    # Fetch income and expenses from the database
+    incomes = Income.objects.all()
+    expenses = Expense.objects.all()
 
-    context ={
-        'incomes' : incomes,
-        'expenses': expenses,
-    }
-    return render(request, 'history.html', context)
+    # Convert to a unified transaction format
+    transactions = [
+        {
+            "date": income.date,
+            "category": "Income",  # Default category for Income
+            "amount": income.amount,
+            "description": income.description,
+            "type": "Income"
+        }
+        for income in incomes
+    ] + [
+        {
+            "date": expense.date,
+            "category": expense.category,  # Use category for Expense
+            "amount": expense.amount,
+            "description": expense.description,
+            "type": "Expense"
+        }
+        for expense in expenses
+    ]
+
+    # Sort transactions by date (latest first)
+    transactions.sort(key=lambda x: x["date"], reverse=True)
+     # Add Pagination (5 transactions per page)
+    paginator = Paginator(transactions, 5)  # Change 5 to any number of transactions per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "history.html", {"page_obj": page_obj})
+

@@ -4,46 +4,52 @@
 <div class="container mx-auto p-6">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Transaction History</h2>
 
-    <!-- Income Table -->
-    <h3 class="text-xl font-semibold text-green-600">Income</h3>
     <table class="w-full bg-white shadow-md rounded-lg overflow-hidden my-4">
-        <thead class="bg-green-500 text-white">
+        <thead class="bg-gray-800 text-white">
             <tr>
                 <th class="p-3 text-left">Date</th>
                 <th class="p-3 text-left">Category</th>
+                <th class="p-3 text-left">Description</th>
                 <th class="p-3 text-right">Amount</th>
+                <th class="p-3 text-center">Edit</th>
             </tr>
         </thead>
         <tbody>
-            {% for income in incomes %}
+            {% for transaction in page_obj %}
             <tr class="border-b">
-                <td class="p-3">{{ income.date }}</td>
-                <td class="p-3">{{ income.category }}</td>
-                <td class="p-3 text-right">₹ {{ income.amount }}</td>
+                <td class="p-3">{{ transaction.date }}</td>
+                <td class="p-3">{{ transaction.category }}</td>
+                <td class="p-3">{{ transaction.description }}</td>
+                <td class="p-3 text-right {% if transaction.type == 'Income' %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if transaction.type == 'Income' %}
+                        + ₹{{ transaction.amount }}
+                    {% else %}
+                        - ₹{{ transaction.amount }}
+                    {% endif %}
+                </td>
+                <td class="p-3 text-center">
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Expense Table -->
-    <h3 class="text-xl font-semibold text-red-600">Expenses</h3>
-    <table class="w-full bg-white shadow-md rounded-lg overflow-hidden my-4">
-        <thead class="bg-red-500 text-white">
-            <tr>
-                <th class="p-3 text-left">Date</th>
-                <th class="p-3 text-left">Category</th>
-                <th class="p-3 text-right">Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-            <tr class="border-b">
-                <td class="p-3">{{ expense.date }}</td>
-                <td class="p-3">{{ expense.category }}</td>
-                <td class="p-3 text-right">₹ {{ expense.amount }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Pagination Controls -->
+    <div class="flex justify-center space-x-2 mt-4">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="px-3 py-1 bg-gray-300 text-gray-800 rounded">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-gray-300 text-gray-800 rounded">Previous</a>
+        {% endif %}
+
+        <span class="px-3 py-1 bg-gray-800 text-white rounded">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-gray-300 text-gray-800 rounded">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 bg-gray-300 text-gray-800 rounded">Last</a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
