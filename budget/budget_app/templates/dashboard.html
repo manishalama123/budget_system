@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <!-- Upper Section -->
@@ -38,40 +39,23 @@
 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-xl font-semibold text-gray-800">Transactions</h3>
-        <canvas id="transactionsChart"></canvas>
+        <canvas id="transactionChart"></canvas>
     </div>
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-xl font-semibold text-gray-800">Expense Distribution</h3>
-        <canvas id="expensesChart"></canvas>
+        <canvas id="myChart" width="500" height="500"></canvas>
+
     </div>
 </div>
-
 <script>
-    // Bar Chart for Transactions
-    const ctx1 = document.getElementById('transactionsChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Transactions',
-                data: [0, 10, 50, 30, 20, 40, 60, 70, 80, 90, 100, 110],
-                backgroundColor: 'blue',
-            }]
-        },
-    });
-
-    // Pie Chart for Expenses
-    const ctx2 = document.getElementById('expensesChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: ['Entertainment', 'Shopping'],
-            datasets: [{
-                data: [70, 30],
-                backgroundColor: ['yellow', 'pink'],
-            }]
-        },
-    });
+    var labels = {{ labels|safe }}
+    var values = {{ values|safe }};
 </script>
+
+<script src="{% static 'js/chart.js' %}"></script>
+ 
+
+
+
+ 
 {% endblock %}

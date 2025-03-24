@@ -13,13 +13,28 @@ def dashboard(request):
     total_income= Income.objects.aggregate(total=Sum('amount'))['total'] or 0
     total_expense = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
     remaining = total_income - total_expense
+    
+
+    expenses = Expense.objects.all()
+    expense_data = {}
+
+    for expense in expenses:
+        category = expense.category
+        expense_data[category] = expense_data.get(category, 0) + float(expense.amount)
+    
+    labels = list(expense_data.keys())
+    values = list(expense_data.values())
+    
     context = {
         'total_income' : total_income,
         'total_expense' : total_expense,
         'remaining': remaining,
         'incomes': Income.objects.all().order_by('-date')[:5],
-        'expenses': Expense.objects.all().order_by('-date')[:5]
+        'expenses': Expense.objects.all().order_by('-date')[:5],
+        'labels': labels,
+        'values': values,
     }
+
     return render(request, 'dashboard.html', context)
 
 def new_income(request):
