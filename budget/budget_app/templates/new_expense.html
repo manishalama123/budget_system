@@ -10,25 +10,77 @@
             <input type="number" name="amount" required class="w-full p-2 border rounded-lg">
         </div>
         <div class="mb-4">
-            <label class="block text-gray-700">Description</label>
-            <input type="text" name="description" class="w-full p-2 border rounded-lg">
+          <label class="block text-gray-700">Description</label>
+          <input type="text" name="description" class="w-full p-2 border rounded-lg" id="description-input" required>
+          <p id="description-error" class="text-red-500 text-sm mt-1 hidden">Please enter at least two words.</p>
         </div>
+      
         <div class="mb-4">
             <label class="block text-gray-700">Category</label>
             <select name="category" required class="w-full p-2 border rounded-lg">
                 <option value="food">Food</option>
-                <option value="transport">Transport</option>
+                <option value="transportation">Transport</option>
                 <option value="shopping">Shopping</option>
                 <option value="bills">Bills</option>
                 <option value="other">Other</option>
             </select>
         </div>
         <div class="mb-4">
-            <label class="block text-gray-700">Date</label>
-            <input type="date" name="date" required class="w-full p-2 border rounded-lg">
+          <label class="block text-gray-700">Date</label>
+          <input type="date" name="date" required class="w-full p-2 border rounded-lg" id="date-input">
         </div>
+      
         
         <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg w-full hover:bg-red-600">Add Expense</button>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Trigger the AJAX request when the user types something in the description field
+    $('input[name="description"]').on('input', function() {
+      let description = $(this).val();  // Get the text entered by the user
+
+      // Make an AJAX GET request to fetch the predicted category
+      $.ajax({
+        url: '{% url "predict_category" %}',  // Django URL for prediction
+        data: {
+          'description': description  // Send description as a query parameter
+        },
+        success: function(response) {
+          let predictedCategory = response.category;
+          if (predictedCategory) {
+            // Update the category dropdown with the predicted category
+            $('select[name="category"]').val(predictedCategory);
+          }
+        }
+      });
+    });
+    // Description validation
+    $('form').on('submit', function(e) {
+      let description = $('#description-input').val().trim();
+      let words = description.split(/\s+/);  // Split by any whitespace
+
+      if (words.length < 2) {
+        e.preventDefault(); // Stop the form from submitting
+        $('#description-error').removeClass('hidden'); // Show error message
+      } else {
+        $('#description-error').addClass('hidden'); // Hide if valid
+      }
+    });
+
+
+    // Date validation and default setting
+    let today = new Date().toISOString().split('T')[0];
+    $('#date-input').attr('max', today);
+    if (!$('#date-input').val()) {
+      $('#date-input').val(today);
+    }
+    });
+</script>
+
+
+
+    
 {% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Toggle Button -->
+<button id="toggleBudgetBtn" class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+  Add New Budget
+</button>
+
+<!-- Budget Form (Initially Hidden) -->
+<section id="add_budget" class="hidden absolute top-16 left-0 right-0 z-10 mx-auto bg-white p-6 rounded-lg shadow-md w-3/4 md:w-1/2">
+    <h2>Budget Planning</h2>
+  <form method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+    {% csrf_token %}
+
+    <div class="flex flex-col mb-4">
+      <label for="name" class="font-medium">Budget Name</label>
+      <input type="text" name="name" id="name" class="border p-2 rounded" required>
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label for="amount" class="font-medium">Amount</label>
+      <input type="number" name="amount" id="amount" class="border p-2 rounded" required step="0.01">
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label for="category" class="font-medium">Category</label>
+      <select name="category" id="category" class="border p-2 rounded" required>
+        <option value="food">Food</option>
+        <option value="transportation">Transport</option>
+        <option value="shopping">Shopping</option>
+        <option value="bills">Bills</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label for="end_date" class="font-medium">End Date</label>
+      <input type="date" name="end_date" id="end_date" class="border p-2 rounded" required>
+    </div>
+
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Budget</button>
+  </form>
+</section>
+
+<!-- Budget Cards Section -->
+<h2 class="text-2xl font-bold mb-4">Your Budgets</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for data in budget_data %}
+        <div class="p-4 border rounded shadow bg-white">
+            <h3 class="text-lg font-semibold">{{ data.budget.name }}</h3>
+            <p>Category: {{ data.budget.category }}</p>
+            <p>Amount: Rs. {{ data.budget.amount }}</p>
+            <p>Spent: Rs. {{ data.spent }}</p>
+            <p>Remaining: Rs. {{ data.remaining }}</p>
+            <p>Progress: {{ data.percentage }}%</p>
+            <div class="h-2 bg-gray-200 rounded mt-2">
+                <div class="h-full bg-green-500 rounded" style="width: {{ data.percentage }}%"></div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No budgets found.</p>
+    {% endfor %}
+</div>
+  
+<!-- JavaScript for Toggle -->
+<script>
+  document.getElementById("toggleBudgetBtn").addEventListener("click", function () {
+    const formSection = document.getElementById("add_budget");
+    formSection.classList.toggle("hidden");
+  });
+</script>
+
+{% endblock %}
